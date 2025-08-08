@@ -1,0 +1,52 @@
+# Etapa 1: Crear imagen optimizada para desarrollo
+FROM php:8.2-apache
+
+# Instalar Composer en la imagen final
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+
+# Instala Xdebug
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+
+#Install php extensions
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+RUN chmod +x /usr/local/bin/install-php-extensions && install-php-extensions pdo pdo_mysql imagick xsl redis bcmath
+
+# Instalar `iproute2` para obtener la IP del host
+RUN apt-get update && apt-get install -y iproute2
+
+# Limpia archivos temporales generados por instalaciones previas
+RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Copiar el código fuente de la aplicación
+COPY ./src /var/www/html
+
+# Copiar archivos de configuración personalizados
+ADD docker/php.ini /usr/local/etc/php/php.ini
+ADD docker/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+ADD docker/000-default.conf /etc/apache2/sites-available/000-default.conf
+
+# Copiar y dar permisos al script xdebug_set_host_ip.sh
+COPY docker/xdebug_set_host_ip.sh /xdebug_set_host_ip.sh
+RUN chmod +x /xdebug_set_host_ip.sh
+
+# Activar modulo que permite leer htaccess y hacer redireccionamientos
+RUN a2enmod rewrite
+
+WORKDIR /var/www/html
+
+# Dar permisos
+RUN chown -R www-data:www-data /var/www/html && \
+    chmod -R 777 /var/www/html/storage && \
+    chmod -R 777 /var/www/html/bootstrap/cache && \
+    chmod -R 777 /var/www/html/vendor && \
+    chmod 666 /usr/local/etc/php/conf.d/xdebug.ini
+
+# Habilitamos la liga blanda al storage
+RUN ln -s /var/www/html/storage/app/public /var/www/html/public/storage \
+    && chown -h www-data:www-data /var/www/html/public/storage
+
+# Exponer el puerto
+EXPOSE 80
+
+# Ejecutar xdebug_set_host_ip.sh y luego iniciar Apache
+ENTRYPOINT ["/bin/bash", "-c", "/xdebug_set_host_ip.sh && apache2-foreground"]
