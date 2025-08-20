@@ -23,8 +23,8 @@ class UsuarioRH
       ]);
     }
 
-    if (!empty($filtros['id_negocio'])) {
-      $query->where('id_negocio', $filtros['id_negocio']);
+    if (!empty($filtros['negocio_id'])) {
+      $query->where('negocio_id', $filtros['negocio_id']);
     }
 
     if (!empty($filtros['usuario_id'])) {

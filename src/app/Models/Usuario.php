@@ -28,10 +28,10 @@ class Usuario extends Authenticatable
     'status',
     'registro_fecha',
     'registro_autor_id',
-    'id_negocio',
+    'negocio_id',
   ];
 
-  // Campos asignables para actualización (excluye id_negocio, status, registro_*)
+  // Campos asignables para actualización (excluye negocio_id, status, registro_*)
   protected $fillableUpdate = [
     'nombre_completo',
     'usuario',
@@ -59,16 +59,16 @@ class Usuario extends Authenticatable
       if (empty($usuario->status)) {
         $usuario->status = UsuarioConsts::STATUS_ACTIVO;
       }
-      if (empty($usuario->id_negocio)) {
-        $usuario->id_negocio = 1;
+      if (empty($usuario->negocio_id)) {
+        $usuario->negocio_id = 1;
       }
     });
 
     static::updating(function ($usuario) {
       $usuario->actualizacion_fecha = now();
       $usuario->actualizacion_autor_id = Auth::id() ?? 1;
-      // Evitar actualizar id_negocio y registro_fecha/id_autor
-      unset($usuario->attributes['id_negocio']);
+      // Evitar actualizar negocio_id y registro_fecha/id_autor
+      unset($usuario->attributes['negocio_id']);
       unset($usuario->attributes['registro_fecha']);
       unset($usuario->attributes['registro_autor_id']);
       // No cambiar status aquí, eso será solo en método eliminar lógico

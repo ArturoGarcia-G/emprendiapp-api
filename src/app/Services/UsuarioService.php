@@ -16,7 +16,7 @@ class UsuarioService
    */
   public static function listarUsuarios($filtros = [], $order = [], $columnas = '')
   {
-    return UsuarioRepo::listarUsuarios($filtros, $order, $columnas,);
+    return UsuarioRepo::listarUsuarios($filtros, $order, $columnas);
   }
 
   /**
