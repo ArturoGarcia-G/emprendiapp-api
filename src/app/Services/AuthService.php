@@ -16,6 +16,9 @@ class AuthService
   public static function login($datosRequest)
   {
     $negocio = NegocioService::obtenerNegocioPorPin($datosRequest['pin']);
+    if (empty($negocio)) {
+      throw new ValidacionException('Credenciales o PIN incorrecto');
+    }
     $usuario = Usuario::where('usuario', $datosRequest['usuario'])
       ->where('negocio_id', $negocio->negocio_id)
       ->first();
