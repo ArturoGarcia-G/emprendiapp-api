@@ -7,7 +7,7 @@ use App\Models\Usuario;
 
 trait DatosAuditoria
 {
-  protected static function bootAutoAuthor()
+  protected static function bootDatosAuditoria()
   {
     static::creating(function ($model) {
       $model->registro_fecha = now();
