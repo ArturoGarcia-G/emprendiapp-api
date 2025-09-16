@@ -11,7 +11,7 @@ trait DatosAuditoria
   {
     static::creating(function ($model) {
       $model->registro_fecha = now();
-      $model->registro_autor_id = Auth::id() ?? self::systemUserId();
+      $model->registro_autor_id = Auth::guard('sanctum')->user()->usuario_id ?? self::systemUserId();
       if (property_exists($model, 'status') && empty($model->status)) {
         $model->status = 'activo';
       }
@@ -19,7 +19,7 @@ trait DatosAuditoria
 
     static::updating(function ($model) {
       $model->actualizacion_fecha = now();
-      $model->actualizacion_autor_id = Auth::id() ?? self::systemUserId();
+      $model->actualizacion_autor_id = Auth::guard('sanctum')->user()->usuario_id ?? self::systemUserId();
 
       // Evitar sobrescribir registro original
       unset($model->attributes['registro_fecha']);
