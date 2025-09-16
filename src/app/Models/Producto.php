@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Producto extends Model
 {
-  use HasUuids, DatosAuditoria;
+  use DatosAuditoria;
 
   protected $table = 'productos';
   protected $primaryKey = 'producto_id';
@@ -18,6 +18,7 @@ class Producto extends Model
 
   // Campos asignables
   protected $fillableCreate = [
+    'producto_id',
     'folio',
     'sku',
     'nombre',
@@ -42,6 +43,7 @@ class Producto extends Model
   ];
 
   protected $fillable = [
+    'producto_id',
     'folio',
     'sku',
     'nombre',
