@@ -32,7 +32,7 @@ Route::middleware('auth.api')->group(function () {
             Route::get('/', 'listarProductos');
             Route::post('/', 'agregarProducto');
             Route::patch('/{id}', 'editarProducto');
-            Route::delete('/{id}', 'editarProducto');
+            Route::delete('/{id}', 'eliminarProducto');
         });
     });
 });
