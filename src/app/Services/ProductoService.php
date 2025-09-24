@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Constantes\ProductoConsts;
+use App\Exceptions\ValidacionException;
+use App\Models\Producto;
 use Exception;
 use App\Repositories\ProductoRepo;
 use App\Services\BO\ProductoBO;
@@ -25,7 +28,7 @@ class ProductoService
    * @param string $productoId
    * @param array $relaciones
    */
-  public static function obtenerProducto($productoId, $relaciones = [])
+  public static function obtenerProducto($productoId, $relaciones = []): Producto
   {
     return ProductoRepo::obtenerProducto($productoId, $relaciones);
   }
@@ -57,6 +60,10 @@ class ProductoService
    */
   public static function eliminarProducto($productoId)
   {
+    $producto = self::obtenerProducto($productoId);
+    if ($producto->status != ProductoConsts::STATUS_ACTIVO) {
+      throw new ValidacionException('El producto ya se encuentra eliminado');
+    }
     return ProductoRepo::eliminarProducto($productoId);
   }
 }
