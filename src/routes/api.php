@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ProductoController;
-use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\InventarioMovimientoController;
 
 Route::get('/ping', function () {
     return response()->json([
@@ -33,6 +34,13 @@ Route::middleware('auth.api')->group(function () {
             Route::post('/', 'agregarProducto');
             Route::patch('/{id}', 'editarProducto');
             Route::delete('/{id}', 'eliminarProducto');
+        });
+    });
+
+    Route::controller(InventarioMovimientoController::class)->group(function () {
+        Route::prefix('inventario-movimientos')->group(function () {
+            Route::get('/', 'listarMovimientos');
+            Route::post('/', 'agregarMovimiento');
         });
     });
 });
