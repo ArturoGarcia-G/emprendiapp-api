@@ -19,15 +19,33 @@ class ProductoController extends BaseController
   public function listarProductos()
   {
     try {
-      $esquemas = ProductoService::listarProductos(
+      $productos = ProductoService::listarProductos(
         $this->filtros,
         $this->orden,
         $this->columnas,
       );
 
-      return $this->exitoResponse('Listado de productos obtenido correctamente.', $esquemas);
+      return $this->exitoResponse('Listado de productos obtenido correctamente.', $productos);
     } catch (Throwable $e) {
       $mensajeError = ExceptionHandler::manejarException($e, 'Ocurrio un error al listar los productos');
+      return response(ApiResponse::build(CodigoRes::ERROR, $mensajeError));
+    }
+  }
+
+  /**
+   * Metodo que retorna un producto
+   * @return response
+   */
+  public function obtenerProducto($productoId)
+  {
+    try {
+      $producto = ProductoService::obtenerProducto(
+        $productoId
+      );
+
+      return $this->exitoResponse('Producto obtenido correctamente.', $producto);
+    } catch (Throwable $e) {
+      $mensajeError = ExceptionHandler::manejarException($e, 'Ocurrio un error al obtener producto');
       return response(ApiResponse::build(CodigoRes::ERROR, $mensajeError));
     }
   }

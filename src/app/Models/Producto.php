@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Traits\DatosAuditoria;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Producto extends Model
 {

@@ -13,7 +13,7 @@ class ProductoBO
   public static function armarInsertProducto($datosRequest)
   {
     $insert = $datosRequest;
-    $folio = 123;
+    $folio = 123; //TODO: Actualizar folio
     $insert['folio'] = $folio;
     $insert['producto_id'] = $datosRequest['productoId'];
     $insert['stock'] = $datosRequest['stockInicial'];

@@ -31,6 +31,7 @@ Route::middleware('auth.api')->group(function () {
     Route::controller(ProductoController::class)->group(function () {
         Route::prefix('productos')->group(function () {
             Route::get('/', 'listarProductos');
+            Route::get('/{id}', 'obtenerProducto');
             Route::post('/', 'agregarProducto');
             Route::patch('/{id}', 'editarProducto');
             Route::delete('/{id}', 'eliminarProducto');
