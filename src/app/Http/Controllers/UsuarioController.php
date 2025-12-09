@@ -19,15 +19,33 @@ class UsuarioController extends BaseController
   public function listarUsuarios()
   {
     try {
-      $esquemas = UsuarioService::listarUsuarios(
+      $usuarios = UsuarioService::listarUsuarios(
         $this->filtros,
         $this->orden,
         $this->columnas,
       );
 
-      return $this->exitoResponse('Listado de usuarios obtenido correctamente.', $esquemas);
+      return $this->exitoResponse('Listado de usuarios obtenido correctamente.', $usuarios);
     } catch (Throwable $e) {
       $mensajeError = ExceptionHandler::manejarException($e, 'Ocurrio un error al listar los usuarios');
+      return response(ApiResponse::build(CodigoRes::ERROR, $mensajeError));
+    }
+  }
+
+  /**
+   * Metodo que retorna un usuario
+   * @return response
+   */
+  public function obtenerUsuario($usuarioId)
+  {
+    try {
+      $usuario = UsuarioService::obtenerUsuario(
+        $usuarioId
+      );
+
+      return $this->exitoResponse('Usuario obtenido correctamente.', $usuario);
+    } catch (Throwable $e) {
+      $mensajeError = ExceptionHandler::manejarException($e, 'Ocurrio un error al obtener usuario');
       return response(ApiResponse::build(CodigoRes::ERROR, $mensajeError));
     }
   }
@@ -56,15 +74,14 @@ class UsuarioController extends BaseController
    * Metodo para editar usuario
    * @return response
    */
-  public function editarUsuario()
+  public function editarUsuario($usuarioId)
   {
     try {
       $this->validarRequest($this->datosRequest, [
-        'usuarioId' => 'required',
         'nombreCompleto' => 'required',
       ]);
 
-      UsuarioService::editarUsuario($this->datosRequest['usuarioId'], $this->datosRequest);
+      UsuarioService::editarUsuario($usuarioId, $this->datosRequest);
 
       return $this->exitoResponse('Usuario editado correctamente.');
     } catch (Throwable $e) {

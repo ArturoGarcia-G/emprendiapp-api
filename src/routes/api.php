@@ -25,7 +25,11 @@ Route::middleware('auth.api')->group(function () {
 
     Route::controller(UsuarioController::class)->group(function () {
         Route::prefix('usuarios')->group(function () {
+            Route::get('/', 'listarUsuarios');
+            Route::get('/{id}', 'obtenerUsuario');
             Route::post('/', 'agregarUsuario');
+            Route::patch('/{id}', 'editarUsuario');
+            Route::delete('/{id}', 'eliminarUsuario');
         });
     });
 

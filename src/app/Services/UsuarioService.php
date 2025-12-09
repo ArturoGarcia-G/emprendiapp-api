@@ -2,8 +2,12 @@
 
 namespace App\Services;
 
+use App\Constantes\UsuarioConsts;
+use App\Exceptions\ValidacionException;
+use App\Models\Usuario;
 use Exception;
 use App\Repositories\UsuarioRepo;
+use App\Services\BO\UsuarioBO;
 
 class UsuarioService
 {
@@ -24,7 +28,7 @@ class UsuarioService
    * @param string $usuarioId
    * @param array $relaciones
    */
-  public static function obtenerUsuario($usuarioId, $relaciones = [])
+  public static function obtenerUsuario($usuarioId, $relaciones = []): Usuario
   {
     return UsuarioRepo::obtenerUsuario($usuarioId, $relaciones);
   }
@@ -35,7 +39,8 @@ class UsuarioService
    */
   public static function agregarUsuario($datosRequest)
   {
-    return UsuarioRepo::agregarUsuario($datosRequest);
+    $datos = UsuarioBO::armarInsertUsuario($datosRequest);
+    return UsuarioRepo::agregarUsuario($datos);
   }
 
   /**
@@ -51,10 +56,13 @@ class UsuarioService
   /**
    * Service que elimina un usuario
    * @param string $usuarioId
-   * @param array $datosRequest
    */
   public static function eliminarUsuario($usuarioId)
   {
+    $usuario = self::obtenerUsuario($usuarioId);
+    if ($usuario->status != UsuarioConsts::STATUS_ACTIVO) {
+      throw new ValidacionException('El usuario ya se encuentra eliminado');
+    }
     return UsuarioRepo::eliminarUsuario($usuarioId);
   }
 }
